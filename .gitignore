@@ -1,7 +1,10 @@
 # Not ignored: .c, .h, Makefile
-# Object files and libraries
-*.o 
-*.a 
+# Object and executable files and libraries
+*.a
+*.o  
+*.exe
+*.out
+.DS_Store
 
 # Emacs Save files
 *~
