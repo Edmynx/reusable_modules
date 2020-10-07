@@ -1,4 +1,4 @@
-CFLAGS			=	-Wall -pedantic -std=c11 -L. -g
+CFLAGS			=	-Wall -pedantic -std=c11 -I. -g
 
 all				:	put-empty put-non-empty get-empty get-non-empty app-empty app-non-empty rem-empty rem-non-empty
 
