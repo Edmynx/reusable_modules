@@ -3,8 +3,9 @@
  * apply() function to an empty list
  */
 
+#include <string.h>
 #include "list.h"
-#include "function.c"
+#include "function.h"
 #define MAXREG 10
 
 void func0(car_t *cp) {
@@ -12,11 +13,11 @@ void func0(car_t *cp) {
     double price;
     int year;
 
-    plate = "US-8000";
+    strcpy(plate, "US-8000");
     price = 10000;
     year = 2016;
 
-    change_all(plate, price, year);
+    change_all(cp, plate, price, year);
 }
 
 int32_t main() {

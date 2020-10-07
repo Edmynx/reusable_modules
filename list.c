@@ -61,8 +61,8 @@ car_t *lremove(char *platep) {
         return front;
     }
 
-    if (strcmp(front->plate, plate) == 0) {
-        lget();
+    if (strcmp(front->plate, platep) == 0) {
+        return lget();
     } 
     
     else {
@@ -70,12 +70,12 @@ car_t *lremove(char *platep) {
         car_t *previous_car = front;
 
         while(current_car) {
-            if (strcmp(current_car->plate, plate) == 0) {
-                previous_car->next = current_car->next
-                return current_car 
+            if (strcmp(current_car->plate, platep) == 0) {
+                previous_car->next = current_car->next;
+                return current_car; 
             }
             previous_car = current_car;
-            current_car = current_car->next
+            current_car = current_car->next;
         }
     }
 

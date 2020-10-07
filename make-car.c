@@ -1,11 +1,14 @@
 /*
- * make-car.c -- module for making cars and/or linking cars
+ * make-car.c -- module for making cars and linking two cars
  */
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "list.h"
 #define MAXREG 10
 
-car_t *cp make_car(char* plate, double price, int year) {
+car_t *make_car(char* plate, double price, int year) {
     car_t *car;
 
     if(!(car = (car_t *)malloc(sizeof(car_t)))) {

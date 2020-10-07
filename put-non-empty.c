@@ -2,9 +2,12 @@
  * list-test1.c -- test function for list.h
  * put() to a non-empty list
  */
- 
+
+#include <stdio.h> 
 #include <stdint.h>
-#include "make-car.c"
+#include <stdlib.h>
+#include "list.h"
+#include "make-car.h"
 #define MAXREG 10
 
 int32_t main() {
@@ -22,19 +25,26 @@ int32_t main() {
 
     result = lput(car1);
     if(result) {
-        printf(stderr, "Failed to put car1 in the empty list\n")
+        fprintf(stderr, "Failed to put car1 in the empty list\n");
     }
 
     result = lput(car2);
     if(result) {
-        printf(stderr, "Failed to put car2 in the non-empty list\n")
+        fprintf(stderr, "Failed to put car2 in the non-empty list\n");
     }
 
     result = lput(car3);
     if(result) {
-        printf(stderr, "Failed to put car3 in the non-empty list\n")
-        return 1
+        fprintf(stderr, "Failed to put car3 in the non-empty list\n");
+        free(car1);
+        free(car2);
+        free(car3);
+        return 1;
     }
+
+    free(car1);
+    free(car2);
+    free(car3);
 
     return 0;
  }

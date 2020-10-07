@@ -3,25 +3,29 @@
  * apply() function to a non-empty list
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "list.h"
-#include "make-car.c"
-#include "function.c"
+#include "make-car.h"
+#include "function.h"
 
 void func0(car_t *cp) {
     char plate[MAXREG];
     double price;
     int year;
 
-    plate = "US-8000";
+    strcpy(plate, "US-8000");
     price = 10000;
     year = 2016;
 
-    change_all(plate, price, year);
+    change_all(cp, plate, price, year);
 }
 
-void main() {
+int main() {
     car_t *car1, *car2, *car3;
+    int32_t result;
 
     char plate_car1[] = "US-1000", plate_car2[] = "US-2000", plate_car3[] = "US-3000";
     double price_car1 = 36000, price_car2 = 38000, price_car3 = 40000;
@@ -33,17 +37,17 @@ void main() {
 
     result = lput(car1);
     if(result) {
-        printf(stderr, "Failed to put car1 in the empty list\n")
+        fprintf(stderr, "Failed to put car1 in the empty list\n");
     }
 
     result = lput(car2);
     if(result) {
-        printf(stderr, "Failed to put car2 in the non-empty list\n")
+        fprintf(stderr, "Failed to put car2 in the non-empty list\n");
     }
 
     result = lput(car3);
     if(result) {
-        printf(stderr, "Failed to put car3 in the non-empty list\n")
+        fprintf(stderr, "Failed to put car3 in the non-empty list\n");
     }
 
     /*
@@ -54,4 +58,6 @@ void main() {
     free(car1);
     free(car2);
     free(car3);
+
+    return 0;
  }

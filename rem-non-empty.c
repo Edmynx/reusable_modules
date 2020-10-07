@@ -2,13 +2,15 @@
  * list-test1.c -- test function for list.h
  * remove() from a non-empty list
  */
- 
+
+#include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "list.h"
-#include "make-car.c"
+#include "make-car.h"
 
 int32_t main() {
-    car_t *car1, *car2, *car3, *result_car;
+    car_t *car1, *car2, *car3, *car4, *car5, *result_car;
     int32_t result_int;
 
     char plate_car1[] = "US-1000", plate_car2[] = "US-2000", plate_car3[] = "US-3000", plate_car4[] = "US-4000", plate_car5[] = "US-5000";
@@ -22,36 +24,36 @@ int32_t main() {
     car5 = make_car(plate_car5, price_car5, year_car5);
 
     result_int = lput(car1);
-    if(!result_int) {
-        printf(stderr, "Failed to put car1 in the empty list\n");
+    if(result_int) {
+        fprintf(stderr, "Failed to put car1 in the empty list\n");
     }
 
     result_int = lput(car2);
-    if(!result) {
-        printf(stderr, "Failed to put car2 in the non-empty list\n");
+    if(result_int) {
+        fprintf(stderr, "Failed to put car2 in the non-empty list\n");
     }
 
     result_int = lput(car3);
-    if(!result_int) {
-        printf(stderr, "Failed to put car3 in the non-empty list\n");
+    if(result_int) {
+        fprintf(stderr, "Failed to put car3 in the non-empty list\n");
     }
 
     result_int = lput(car4);
-    if(!result_int) {
-        printf(stderr, "Failed to put car4 in the non-empty list\n");
+    if(result_int) {
+        fprintf(stderr, "Failed to put car4 in the non-empty list\n");
     }
 
     result_int = lput(car5);
-    if(!result_int) {
-        printf(stderr, "Failed to put car5 in the non-empty list\n");
+    if(result_int) {
+        fprintf(stderr, "Failed to put car5 in the non-empty list\n");
     }
 
     /*
      * remove the last car
      */
     result_car = lremove(plate_car1);
-    if(!resutl_car) {
-        printf(stderr, "Function Error: 'lremove()' should be able to remove the car associated with plate1\n");
+    if(!result_car) {
+        fprintf(stderr, "Function Error: 'lremove()' should be able to remove the car associated with plate1\n");
         free(car1);
         free(car2);
         free(car3);
@@ -64,8 +66,8 @@ int32_t main() {
      * remove the first car
      */
     result_car = lremove(plate_car5);
-    if(!resutl_car) {
-        printf(stderr, "Function Error: 'lremove()' should be able to remove the car associated with plate5\n");
+    if(!result_car) {
+        fprintf(stderr, "Function Error: 'lremove()' should be able to remove the car associated with plate5\n");
         free(car1);
         free(car2);
         free(car3);
@@ -78,8 +80,8 @@ int32_t main() {
      * remove the middle car
      */
     result_car = lremove(plate_car3);
-    if(!resutl_car) {
-        printf(stderr, "Function Error: 'lremove()' should be able to remove the car associated with plate3\n");
+    if(!result_car) {
+        fprintf(stderr, "Function Error: 'lremove()' should be able to remove the car associated with plate3\n");
         free(car1);
         free(car2);
         free(car3);

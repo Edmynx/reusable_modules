@@ -2,10 +2,12 @@
  * list-test1.c -- test function for list.h
  * get() from a non-empty list
  */
- 
+
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include "list.h"
-#include "make-car.c"
+#include "make-car.h"
 
 int32_t main() {
     car_t *car1, *car2, *car3, *result_car;
@@ -20,23 +22,23 @@ int32_t main() {
     car3 = make_car(plate_car3, price_car3, year_car3);
 
     result_int = lput(car1);
-    if(!result_int) {
-        printf(stderr, "Failed to put car1 in the empty list\n");
+    if(result_int) {
+        fprintf(stderr, "Failed to put car1 in the empty list\n");
     }
 
     result_int = lput(car2);
-    if(!result) {
-        printf(stderr, "Failed to put car2 in the non-empty list\n");
+    if(result_int) {
+        fprintf(stderr, "Failed to put car2 in the non-empty list\n");
     }
 
     result_int = lput(car3);
-    if(!result_int) {
-        printf(stderr, "Failed to put car3 in the non-empty list\n");
+    if(result_int) {
+        fprintf(stderr, "Failed to put car3 in the non-empty list\n");
     }
 
     result_car = lget();
-    if(!resutl_car) {
-        printf(stderr, "Function Error: 'lget()' should be able to get the last car from a non-empty list\n");
+    if(!result_car) {
+        fprintf(stderr, "Function Error: 'lget()' should be able to get the last car from a non-empty list\n");
         free(car1);
         free(car2);
         free(car3);

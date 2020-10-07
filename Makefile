@@ -1,6 +1,6 @@
 CFLAGS			=	-Wall -pedantic -std=c11 -L. -g
 
-all				:	put-empty put-non-empty get-empty get-non-empty apply-empty apply-non-empty rem-empty rem-non-empty
+all				:	put-empty put-non-empty get-empty get-non-empty app-empty app-non-empty rem-empty rem-non-empty
 
 list.o 			:	list.c list.h
 					gcc $(CFLAGS) -c list.c 
@@ -35,30 +35,30 @@ rem-empty.o		:	rem-empty.c list.h
 rem-non-empty.o	:	rem-non-empty.c list.h
 					gcc $(CFLAGS) -c rem-non-empty.c
 
-put-empty		:	put-empty.o make-car.o list.h
-					gcc $(CFLAGS) put-empty.o make-car.o -o put-empty
+put-empty		:	put-empty.o list.o make-car.o list.h
+					gcc $(CFLAGS) put-empty.o list.o make-car.o -o put-empty
 
-put-non-empty	:	put-non-empty.o make-car.o list.h
-					gcc $(CFLAGS) rem-non-empty.o make-car.o -o put-non-empty
+put-non-empty	:	put-non-empty.o list.o make-car.o list.h
+					gcc $(CFLAGS) put-non-empty.o list.o make-car.o -o put-non-empty
 
-get-empty		:	get-empty.o list.h
-					gcc $(CFLAGS) get-empty.o -o get-empty
+get-empty		:	get-empty.o list.o list.h
+					gcc $(CFLAGS) get-empty.o list.o -o get-empty
 
-get-non-empty	:	get-non-empty.o make-car.o list.h
-					gcc $(CFLAGS) get-non-empty.o make-car.o -get-non-empty
+get-non-empty	:	get-non-empty.o list.o make-car.o list.h
+					gcc $(CFLAGS) get-non-empty.o list.o make-car.o -o get-non-empty
 
-app-empty		:	app-empty.o list.h
-					gcc $(CFLAGS) app-empty.o -o app-empty
+app-empty		:	app-empty.o list.o function.o list.h
+					gcc $(CFLAGS) app-empty.o list.o function.o -o app-empty
 
-app-non-empty	:	app-non-empty.o make-car.o list.h
-					gcc $(CFLAGS) app-non-empty.o make-car.o -o app-non-empty
+app-non-empty	:	app-non-empty.o list.o make-car.o function.o list.h
+					gcc $(CFLAGS) app-non-empty.o list.o make-car.o function.o -o app-non-empty
 
-rem-empty		:	rem-empty.o list.h
-					gcc $(CFLAGS) rem-empty.o -o rem-empty
+rem-empty		:	rem-empty.o list.o list.h
+					gcc $(CFLAGS) rem-empty.o list.o -o rem-empty
 
-rem-non-empty	:	rem-non-empty.o make-car.o list.h
-					gcc $(CFLAGS) rem-non-empty.o make-car.o -o rem-non-empty
+rem-non-empty	:	rem-non-empty.o list.o make-car.o list.h
+					gcc $(CFLAGS) rem-non-empty.o list.o make-car.o -o rem-non-empty
 
 clean			:	
-					rm -f *.o put-empty put-non-empty get-empty get-non-empty apply-empty apply-non-empty rem-empty rem-non-empty
+					rm -f *.o put-empty put-non-empty get-empty get-non-empty app-empty app-non-empty rem-empty rem-non-empty
 
