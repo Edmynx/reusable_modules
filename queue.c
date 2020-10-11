@@ -29,21 +29,26 @@ static bool equal (void* elementp, const void* keyp) {
     return *(int *)elementp == *(int *)keyp;
 }
 
-// Can't get working.
-queue_t* qopen(void);
+queue_t* qopen(void) {
+     struct queue* qp = malloc(sizeof(struct queue));
 
-// Dependent on open.
+     qp->front = NULL;
+     qp->back = NULL;
+
+     return (queue_t *) qp;
+}
+
+// Doesn't work
 void qclose(queue_t *qp) {
     if (!qp) {
         fprintf(stderr, "Error: qp points to null\n");
         return;
     }
 
-    // free(qp);
+    free(qp);
     qp = NULL;
 }
 
-// Works for now.
 int32_t qput(queue_t *qp, void *elementp) {
     if (!qp) {
         fprintf(stderr, "Error: qp is null");
@@ -65,7 +70,6 @@ int32_t qput(queue_t *qp, void *elementp) {
     return 0;
 }
 
-// Works for now.
 void* qget(queue_t *qp) {
     if (!qp) {
         fprintf(stderr, "Error: qp is null");
@@ -85,7 +89,6 @@ void* qget(queue_t *qp) {
     return first_elem->data;
 }
 
-// Works for now.
 void qapply(queue_t *qp, void (*fn)(void* elementp)) {
     if (!qp) {
         fprintf(stderr, "Error: qp is null");
@@ -107,7 +110,6 @@ void qapply(queue_t *qp, void (*fn)(void* elementp)) {
     }
 }
 
-// Works for now.
 void* qsearch(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), const void* skeyp) {   
     if (!qp) {
         fprintf(stderr, "Error: qp is null");
@@ -134,7 +136,6 @@ void* qsearch(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), co
     return NULL;
 }
 
-// Works for now.
 void* qremove(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), const void* skeyp) {
     if (!qp) {
         fprintf(stderr, "Error: qp is null");
@@ -167,7 +168,6 @@ void* qremove(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), co
     return NULL;
 }
 
-// Works for now.
 void qconcat(queue_t *q1p, queue_t *q2p) {
     if (!q1p || !q2p) {
         fprintf(stderr, "Error: either q1p or q2p is null");
@@ -190,7 +190,6 @@ void qconcat(queue_t *q1p, queue_t *q2p) {
     }
 }
 
-// Most functions seem to work assuming the queue is properly initialized.
 int main(void) {
     int elem1 = 1;
     int elem2 = 2;
@@ -200,41 +199,35 @@ int main(void) {
     int elem5 = 5;
     int elem6 = 6;
 
-    struct queue q = {NULL, NULL};
-    struct queue q2 = {NULL, NULL};
+    queue_t *q = qopen();
+    queue_t *q2 = qopen();
 
-    qput((queue_t *)&q, (void *) &elem1);
-    qput((queue_t *)&q, (void *) &elem2);
-    qput((queue_t *)&q, (void *) &elem3);
+    qput(q, (void *) &elem1);
+    qput(q, (void *) &elem2);
+    qput(q, (void *) &elem3);
 
-    qput((queue_t *)&q2, (void *) &elem4);
-    qput((queue_t *)&q2, (void *) &elem5);
-    qput((queue_t *)&q2, (void *) &elem6);
+    qput(q2, (void *) &elem4);
+    qput(q2, (void *) &elem5);
+    qput(q2, (void *) &elem6);
 
-    qconcat(&q, &q2);
-    qapply(&q, print_int);
+    qconcat(q, q2);
+    qapply(q, print_int);
 
     int key = 4;
-    void *res = qsearch((queue_t *)&q, equal, (void *)&key);
+    void *res = qsearch(q, equal, (void *)&key);
+
     printf("%d\n\n", *(int *)res);
 
-    res = qremove((queue_t *)&q, equal, (void *)&key);
+    key = 2;
+    res = qremove(q, equal, (void *)&key);
     printf("%d\n\n", *(int *)res);
 
-    printf("%d\n", *(int *)qget((queue_t *)&q));
-    printf("%d\n", *(int *)qget((queue_t *)&q));
-    printf("%d\n", *(int *)qget((queue_t *)&q));
-    printf("%d\n", *(int *)qget((queue_t *)&q));
-    printf("%d\n", *(int *)qget((queue_t *)&q));
-    printf("%d\n", *(int *)qget((queue_t *)&q));
+    printf("%d\n", *(int *)qget(q));
+    printf("%d\n", *(int *)qget(q));
+    printf("%d\n", *(int *)qget(q));
+    printf("%d\n", *(int *)qget(q));
+    printf("%d\n", *(int *)qget(q));
+
+    qclose(q);
 }
-
-// int main(void) {
-//     int elem1 = 1;
-//     queue_t *qp = qopen();
-//     qput(qp, (void *)&elem1);
-
-//     struct queue* ptr = (struct queue*)qp;
-//     printf("%d\n", ptr->front->data);
-// }
 
