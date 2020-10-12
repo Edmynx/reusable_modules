@@ -4,22 +4,22 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef struct node {
+struct node_t {
     void *data;
-    struct node *next;
-} node_t;
-
-struct queue {
-    node_t *front;
-    node_t *back;
+    struct node_t *next;
 };
 
-static node_t* wrap_element(void *element) {
-    node_t *elem = malloc(sizeof(node_t));
+static struct node_t* wrap_element(void *element) {
+    struct node_t *elem = malloc(sizeof(struct node_t));
     elem->data = element;
     elem->next = NULL;
     return elem;
 }
+
+struct queue {
+    struct node_t *front;
+    struct node_t *back;
+}; 
 
 static void print_int(void* elementp) {
     printf("%d\n\n", *(int *)elementp);
@@ -30,105 +30,104 @@ static bool equal (void* elementp, const void* keyp) {
 }
 
 queue_t* qopen(void) {
-     struct queue* qp = malloc(sizeof(struct queue));
-
-     qp->front = NULL;
-     qp->back = NULL;
-
-     return (queue_t *) qp;
+    queue_t *qp = (queue_t *)malloc(sizeof(struct queue));
+    ((struct queue *) qp)->front = NULL;
+    ((struct queue *) qp)->back = NULL;
+    return qp;
 }
 
-// Doesn't work
 void qclose(queue_t *qp) {
-    if (!qp) {
-        fprintf(stderr, "Error: qp points to null\n");
-        return;
+    if (!((struct queue *)qp)) {
+        fprintf(stderr, "Error: Queue does not exist\n");
     }
 
-    free(qp);
-    qp = NULL;
+    else {
+        struct node_t *next_node = ((struct queue *) qp)->front;
+        while (next_node) {
+            struct node_t *current_node = next_node;
+            next_node = next_node->next;
+            free(current_node);
+        }
+        free(((struct queue *) qp));
+    }
 }
 
 int32_t qput(queue_t *qp, void *elementp) {
-    if (!qp) {
-        fprintf(stderr, "Error: qp is null");
+    if (!((struct queue *) qp)) {
+        fprintf(stderr, "Error: Queue does not exist");
         return 1;
     }
 
-    struct queue* queue_p = qp;
-    node_t *elem = wrap_element(elementp);
+    struct node_t *elem = wrap_element(elementp);
 
-    if (!queue_p->front && !queue_p->back) {
-        queue_p->front = elem;
-        queue_p->back = elem;
-        return 0;
+    if (!((struct queue *) qp)->front && !((struct queue *) qp)->back) {
+        ((struct queue *) qp)->front = elem;
+        ((struct queue *) qp)->back = elem;
     }
 
-    queue_p->back->next = elem;
-    queue_p->back = elem;
+    else {
+        ((struct queue *) qp)->back->next = elem;
+        ((struct queue *) qp)->back = elem;
+    }
 
     return 0;
 }
 
 void* qget(queue_t *qp) {
-    if (!qp) {
-        fprintf(stderr, "Error: qp is null");
+    if (!((struct queue *) qp)) {
+        fprintf(stderr, "Error: Queue does not exist");
         return NULL;
     }
 
-    struct queue* queue_p = qp;
-
-    if (!queue_p->front && !queue_p->back) {
-        fprintf(stderr, "Error: queue is empty");
+    if (!((struct queue *) qp)->front && !((struct queue *) qp)->back) {
+        fprintf(stderr, "Error: Queue is empty");
         return NULL;
     }
 
-    node_t *first_elem = queue_p->front;
-    queue_p->front = queue_p->front->next;
+    struct node_t *first_elem = ((struct queue *) qp)->front;
+    ((struct queue *) qp)->front = ((struct queue *) qp)->front->next;
 
     return first_elem->data;
 }
 
 void qapply(queue_t *qp, void (*fn)(void* elementp)) {
-    if (!qp) {
-        fprintf(stderr, "Error: qp is null");
+    if (!((struct queue *) qp)) {
+        fprintf(stderr, "Error: Queue does not exist");
         return;
     }
 
-    struct queue* queue_p = qp;
-
-    if (!queue_p->front && !queue_p->back) {
-        fprintf(stderr, "Error: queue is empty");
-        return;
+    if (!((struct queue *) qp)->front && !((struct queue *) qp)->back) {
+        fprintf(stderr, "Error: Queue is empty");
     }
     
-    node_t *current_node = queue_p->front;
-
-    while (current_node) {
-        fn(current_node->data);
-        current_node = current_node->next;
-    }
+    else {
+        struct node_t *current_node = ((struct queue *) qp)->front;
+        while (current_node) {
+            fn(current_node->data);
+            current_node = current_node->next;
+        }
+    } 
 }
 
 void* qsearch(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), const void* skeyp) {   
-    if (!qp) {
-        fprintf(stderr, "Error: qp is null");
+    if (!((struct queue *) qp)) {
+        fprintf(stderr, "Error: Queue does not exist");
         return NULL;
     }
 
-    struct queue* queue_p = qp;
-
-    if (!queue_p->front && !queue_p->back) {
-        fprintf(stderr, "Error: queue is empty");
+    if (!((struct queue *) qp)->front && !((struct queue *) qp)->back) {
+        fprintf(stderr, "Error: Queue is empty");
         return NULL;
     }
 
-    node_t *current_node = queue_p->front;
+    struct node_t *current_node = ((struct queue *) qp)->front;
 
     while (current_node) {
         if (searchfn(current_node->data, skeyp)) {
             return current_node->data;
-        } else {
+        } 
+        
+        else {
             current_node = current_node->next;
         }
     }
@@ -137,57 +136,53 @@ void* qsearch(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), co
 }
 
 void* qremove(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), const void* skeyp) {
-    if (!qp) {
-        fprintf(stderr, "Error: qp is null");
+    if (!((struct queue *) qp)) {
+        fprintf(stderr, "Error: Queue does not exist");
         return NULL;
     }
 
-    struct queue* queue_p = qp;
-
-    if (!queue_p->front && !queue_p->back) {
-        fprintf(stderr, "Error: queue is empty");
+    if (!((struct queue *) qp)->front && !((struct queue *) qp)->back) {
+        fprintf(stderr, "Error: Queue is empty");
         return NULL;
     }
 
-    if (searchfn(queue_p->front->data, skeyp)) {
-        return qget(qp);
-    } else {
-        node_t *previous_node = queue_p->front;
-        node_t *current_node = queue_p->front->next;
-        
-        while (current_node) {
-            if (searchfn(current_node->data, skeyp)) {
-                previous_node->next = current_node->next;
-                return current_node->data;
-            }
-            previous_node = current_node;
-            current_node = current_node->next;
+    if (searchfn(((struct queue *) qp)->front->data, skeyp)) {
+        return qget(((struct queue *) qp));
+    } 
+
+    struct node_t *previous_node = ((struct queue *) qp)->front;
+    struct node_t *current_node = ((struct queue *) qp)->front->next;
+    
+    while (current_node) {
+        if (searchfn(current_node->data, skeyp)) {
+            previous_node->next = current_node->next;
+            return current_node->data;
         }
+        previous_node = current_node;
+        current_node = current_node->next;
     }
-
     return NULL;
 }
 
 void qconcat(queue_t *q1p, queue_t *q2p) {
-    if (!q1p || !q2p) {
-        fprintf(stderr, "Error: either q1p or q2p is null");
+    if (!((struct queue *) q1p) || !((struct queue *) q2p)) {
+        fprintf(stderr, "Error: Either q1p or q2p does not exist");
         return;
     }
 
-    struct queue* queue_1p = q1p;
-    struct queue* queue_2p = q2p;
-
-    if (!queue_1p->front && !queue_1p->back) {
+    if (!((struct queue *) q1p)->front && !((struct queue *) q1p)->back) {
         fprintf(stderr, "Error: q1p is empty");
         return;
-    } else if (!queue_2p->front && !queue_2p->back) {
+    } 
+
+    if (!((struct queue *) q2p)->front && !((struct queue *) q2p)->back) {
         fprintf(stderr, "Error: q2p is empty");
         return;
-    } else {
-        queue_1p->back->next = queue_2p->front;
-        queue_1p->back = queue_2p->back;
-        qclose(q2p);
-    }
+    } 
+
+    ((struct queue *) q1p)->back->next = ((struct queue *) q2p)->front;
+    ((struct queue *) q1p)->back = ((struct queue *) q2p)->back;
+    qclose(((struct queue *) q2p));
 }
 
 int main(void) {
