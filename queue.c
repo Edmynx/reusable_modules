@@ -33,6 +33,11 @@ queue_t* qopen(void) {
     queue_t *qp = (queue_t *)malloc(sizeof(struct queue));
     ((struct queue *) qp)->front = NULL;
     ((struct queue *) qp)->back = NULL;
+    
+    if (!((struct queue *) qp)) {
+        fprintf(stderr, "Error: Failed to allocate memory queue\n");
+        return NULL;
+    }
     return qp;
 }
 
@@ -54,7 +59,7 @@ void qclose(queue_t *qp) {
 
 int32_t qput(queue_t *qp, void *elementp) {
     if (!((struct queue *) qp)) {
-        fprintf(stderr, "Error: Queue does not exist");
+        fprintf(stderr, "Error: Queue does not exist\n");
         return 1;
     }
 
@@ -193,7 +198,6 @@ int main(void) {
     int elem4 = 4;
     int elem5 = 5;
     int elem6 = 6;
-    int elem7 = 7
 
     queue_t *q = qopen();
     queue_t *q2 = qopen();
