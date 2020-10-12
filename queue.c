@@ -193,6 +193,7 @@ int main(void) {
     int elem4 = 4;
     int elem5 = 5;
     int elem6 = 6;
+    int elem7 = 7
 
     queue_t *q = qopen();
     queue_t *q2 = qopen();
