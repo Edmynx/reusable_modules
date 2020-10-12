@@ -92,7 +92,10 @@ void* qget(queue_t *qp) {
     struct node_t *first_elem = ((struct queue *) qp)->front;
     ((struct queue *) qp)->front = ((struct queue *) qp)->front->next;
 
-    return first_elem->data;
+    void *first_elem_data = first_elem->data;
+    free(first_elem);
+
+    return first_elem_data;
 }
 
 void qapply(queue_t *qp, void (*fn)(void* elementp)) {
@@ -161,7 +164,9 @@ void* qremove(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), co
     while (current_node) {
         if (searchfn(current_node->data, skeyp)) {
             previous_node->next = current_node->next;
-            return current_node->data;
+            void *current_node_data = current_node->data;
+            free(current_node);
+            return current_node_data;
         }
         previous_node = current_node;
         current_node = current_node->next;
@@ -187,7 +192,9 @@ void qconcat(queue_t *q1p, queue_t *q2p) {
 
     ((struct queue *) q1p)->back->next = ((struct queue *) q2p)->front;
     ((struct queue *) q1p)->back = ((struct queue *) q2p)->back;
-    qclose(((struct queue *) q2p));
+
+    free(q2p);
+    q2p = NULL;
 }
 
 int main(void) {
@@ -222,11 +229,17 @@ int main(void) {
     res = qremove(q, equal, (void *)&key);
     printf("%d\n\n", *(int *)res);
 
-    printf("%d\n", *(int *)qget(q));
-    printf("%d\n", *(int *)qget(q));
-    printf("%d\n", *(int *)qget(q));
-    printf("%d\n", *(int *)qget(q));
-    printf("%d\n", *(int *)qget(q));
+    int *res1 = qget(q);
+    int *res2 = qget(q);
+    int *res3 = qget(q);
+    int *res4 = qget(q);
+    int *res5 = qget(q);
+
+    printf("%d\n", *res1);
+    printf("%d\n", *res2);
+    printf("%d\n", *res3);
+    printf("%d\n", *res4);
+    printf("%d\n", *res5);
 
     qclose(q);
 }
