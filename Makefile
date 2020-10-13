@@ -8,8 +8,8 @@ list.o 			:	list.c list.h
 make-car.o		:	make-car.c list.h
 					gcc $(CFLAGS) -c make-car.c
 
-function.o		:	function.c list.h
-					gcc $(CFLAGS) -c function.c				
+car-functions.o	:	car-functions.c list.h
+					gcc $(CFLAGS) -c car-functions.c				
 
 put-empty.o		:	put-empty.c list.h
 					gcc $(CFLAGS) -c put-empty.c 
@@ -47,11 +47,11 @@ get-empty		:	get-empty.o list.o list.h
 get-non-empty	:	get-non-empty.o list.o make-car.o list.h
 					gcc $(CFLAGS) get-non-empty.o list.o make-car.o -o get-non-empty
 
-app-empty		:	app-empty.o list.o function.o list.h
-					gcc $(CFLAGS) app-empty.o list.o function.o -o app-empty
+app-empty		:	app-empty.o list.o car-functions.o list.h
+					gcc $(CFLAGS) app-empty.o list.o car-functions.o -o app-empty
 
-app-non-empty	:	app-non-empty.o list.o make-car.o function.o list.h
-					gcc $(CFLAGS) app-non-empty.o list.o make-car.o function.o -o app-non-empty
+app-non-empty	:	app-non-empty.o list.o make-car.o car-functions.o list.h
+					gcc $(CFLAGS) app-non-empty.o list.o make-car.o car-functions.o -o app-non-empty
 
 rem-empty		:	rem-empty.o list.o list.h
 					gcc $(CFLAGS) rem-empty.o list.o -o rem-empty

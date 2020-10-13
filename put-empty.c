@@ -3,10 +3,11 @@
  * put() to an empty list
  */
 
-#include <stdio.h>
-#include <stdint.h>
 #include "list.h"
 #include "make-car.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 int32_t main() {
     car_t *car;
@@ -21,7 +22,8 @@ int32_t main() {
     result = lput(car);
     if(result) {
         fprintf(stderr, "Failed to put car in the empty list\n");
+        exit(EXIT_FAILURE);
     }
-    
-    return result;
+
+    exit(EXIT_SUCCESS);
  }

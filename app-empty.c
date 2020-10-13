@@ -3,9 +3,11 @@
  * apply() function to an empty list
  */
 
-#include <string.h>
 #include "list.h"
-#include "function.h"
+#include "car-functions.h"
+#include <string.h>
+#include <stdlib.h>
+
 #define MAXREG 10
 
 void func0(car_t *cp) {
@@ -22,4 +24,5 @@ void func0(car_t *cp) {
 
 int32_t main() {
     lapply(func0);
+    exit(EXIT_SUCCESS);
  }

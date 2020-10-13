@@ -3,9 +3,10 @@
  * get() from an empty list
  */
  
+ #include "list.h"
 #include <stdio.h>
 #include <stdint.h>
-#include "list.h"
+#include <stdlib.h>
 
 int32_t main() {
     car_t *result;
@@ -13,8 +14,8 @@ int32_t main() {
     result = lget();
     if(result) {
         fprintf(stderr, "Function Error: 'lget()' is not supposed to get from an empty list\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
     
-    return 0;
+    exit(EXIT_SUCCESS);
  }

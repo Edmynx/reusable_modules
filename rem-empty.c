@@ -3,10 +3,10 @@
  * remove() from an empty list
  */
  
-
+#include "list.h"
 #include <stdio.h>
 #include <stdint.h>
-#include "list.h"
+#include <stdlib.h>
 
 int32_t main() {
     car_t *result;
@@ -16,8 +16,8 @@ int32_t main() {
     result = lremove(plate_car1);
     if(result) {
         fprintf(stderr, "Function Error: 'lremove()' should not be able to remove from an empty list\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
-    
-    return 0;
+
+    exit(EXIT_SUCCESS);
  }

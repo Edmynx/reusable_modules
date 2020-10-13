@@ -1,6 +1,6 @@
 #pragma once
 /* 
- * list.h -- public interface to a list of cars
+ * make-car.h -- public interface to car for list
  */
 
 car_t *make_car(char* plate, double price, int year);

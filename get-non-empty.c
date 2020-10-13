@@ -42,12 +42,11 @@ int32_t main() {
         free(car1);
         free(car2);
         free(car3);
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     free(car1);
     free(car2);
     free(car3);
-    
-    return 0;
+    exit(EXIT_SUCCESS);
  }

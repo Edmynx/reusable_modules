@@ -64,11 +64,11 @@ static uint32_t super_fast_hash(const char *data, int len, uint32_t tablesize) {
     return hash % tablesize;
 }
 
-struct hashtable {
+typedef struct hashtable {
     queue_t **hqp;
     uint32_t hsize;
     uint32_t hcount;
-};
+} hashstruct_t;
 
 hashtable_t *hopen(uint32_t hsize) {
     if (hsize < 1) {
@@ -76,95 +76,90 @@ hashtable_t *hopen(uint32_t hsize) {
         return NULL;
     }
 
-    hashtable_t *htp = (hashtable_t *)malloc(sizeof(struct hashtable));
+    hashstruct_t *htp = (hashtable_t *)malloc(sizeof(hashstruct_t));
 
-    if (!((struct hashtable *)htp)) {
+    if (!htp) {
         fprintf(stderr, "Error: Failed to allocate memory for hashtable\n");
         return NULL;
     }
 
-    queue_t *qps = malloc(sizeof((struct queue *) queue_t) * hsize);
-    if (!qp) {
+    htp->hqp = malloc(sizeof(queue_t *) * hsize);
+
+    if (!(htp->hqp)) {
         fprintf(stderr, "Error: Failed to allocate memory for table queues\n");
         return NULL;
     }
 
-    ((struct hashtable *)htp)->hqp = qps;
-    ((struct hashtable *)htp)->hsize = hsize;
-    ((struct hashtable *)htp)->hcount = 0;
+    queue_t **qp = htp->hqp;
+    queue_t **qpend = qp + hsize;
+    for (qp; qp < qpend; qp++) {
+        qp = qopen();
+    }
 
-    return htp;
+    htp->hsize = hsize;
+    htp->hcount = 0;
+
+    return (hashtable_t *)htp;
 }
 
 void hclose(hashtable_t *htp) {
-    if (!((struct hashtable *)htp)) {
+    if (!((hashstruct_t *)htp)) {
         fprintf(stderr, "Error: Hashtable does not exist");
         return;
     }
 
-    struct queue qp = s(truct queue *) ((struct hashtable *)htp)->hqp;
-    queue_t *qpend = qp + ((struct hashtable *)htp)->hsize;
-    for (qp; qp <= qpend; qp++) {
+    queue_t **qp = ((hashstruct_t *)htp)->hqp;
+    queue_t **qpend = qp + ((hashstruct_t *)htp)->hsize; 
+    for (qp; qp < qpend; qp++) {
         qclose(qp);
     }
 
-    free(((struct hashtable *)htp)->hqp);
+    free(htp->hqp);
     free(htp);
 }
 
 int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
-    queue_t * qp;
-    if(!((struct hashtable *) htp)) {
+    if(!((hashstruct_t *) htp)) {
         fprintf(stderr, "Error: Hashtable does not exist");
         return 1;
     }
-
-    uint32_t hash = super_fast_hash(key, keylen, ((struct hashtable *) htp)->hsize);
-
-    if(!(((struct hashtable *) htp)->hqp[hash])) {
-        qp = qopen();
-    }
-
-    else {
-        qp = ((struct hashtable *) htp)->hqp;
-    }
-
-    qput(qp, ep);
-    ((struct hashtable *) htp)->hqp[hash] = qp;
+    uint32_t hash = super_fast_hash(key, keylen, ((hashstruct_t *) htp)->hsize);
+    qput(((hashstruct_t *) htp)->hqp[hash], ep);
+    ((hashstruct_t *) htp)->hcount + 1;
     return 0;
 }
     
 void happly(hashtable_t *htp, void (*fn)(void* ep)) {
-    if (!((struct hashtable *) htp)) {
+    if (!((hashstruct_t *) htp)) {
         fprintf(stderr, "Error: Htp does not exist");
         return;
     }
 
-    if (((struct hashtable *) htp)->hcount == 0) {
+    if (((hashstruct_t *) htp)->hcount == 0) {
         fprintf(stderr, "Error: Hashtable is empty");
         return;
     }
 
-    queue_t *qp = ((struct hashtable *)htp)->hqp;
-    queue_t *qpend = qp + ((struct hashtable *)htp)->hsize;
-    for (qp; qp <= qpend; qp++) {
-        qapply(qp);
+    queue_t *qp = ((hashstruct_t *)htp)->hqp;
+    queue_t *qpend = qp + ((hashstruct_t *)htp)->hsize; 
+    for (qp; qp < qpend; qp++) {
+        qapply(qp, fn);
     }
 }
 
 void *hsearch(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen) {
-    if (!((struct hashtable *)htp)) {
+    if (!((hashstruct_t *)htp)) {
         fprintf(stderr, "Error: Hashtable does not exist");
         return NULL;
     }
 
-    if (((struct hashtable *) htp)->hcount == 0) {
+    if (((hashstruct_t *) htp)->hcount == 0) {
         fprintf(stderr, "Error: Hashtable is empty");
         return NULL;
     }
 
     uint32_t hash = super_fast_hash(key, keylen, ((struct hashtable *) htp)->hsize);
-    return qsearch(((struct hashtable *) htp)->hqp[hash], searchfn, key);
+    return qsearch(((hashstruct_t *) htp)->hqp[hash], searchfn, key);
 }
 
 void *hremove(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen) {
@@ -180,17 +175,4 @@ void *hremove(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* sea
 
     uint32_t hash = super_fast_hash(key, keylen, ((struct hashtable *) htp)->hsize);
     return qremove(((struct hashtable *) htp)->hqp[hash], searchfn, key);
-}
-
-int main(void) {
-    struct hashtable *htp = hopen(5);
-    queue_t *queue = qopen();
-    int elem = 1;
-
-    qput(queue, (void *) &elem);
-    /*htp->table[0] = queue;
-    htp->length++;
-
-    printf("%d\n", *(int *)qget(htp->table[0]));*/
-    hclose(htp);
 }

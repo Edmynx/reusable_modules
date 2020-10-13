@@ -26,11 +26,19 @@ int32_t main() {
     result = lput(car1);
     if(result) {
         fprintf(stderr, "Failed to put car1 in the empty list\n");
+        free(car1);
+        free(car2);
+        free(car3);
+        exit(EXIT_FAILURE);
     }
 
     result = lput(car2);
     if(result) {
         fprintf(stderr, "Failed to put car2 in the non-empty list\n");
+        free(car1);
+        free(car2);
+        free(car3);
+        exit(EXIT_FAILURE);
     }
 
     result = lput(car3);
@@ -39,12 +47,12 @@ int32_t main() {
         free(car1);
         free(car2);
         free(car3);
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     free(car1);
     free(car2);
     free(car3);
 
-    return 0;
+    exit(EXIT_FAILURE);
  }

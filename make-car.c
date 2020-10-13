@@ -2,22 +2,22 @@
  * make-car.c -- module for making cars and linking two cars
  */
 
+#include "list.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "list.h"
 #define MAXREG 10
 
 car_t *make_car(char* plate, double price, int year) {
     car_t *car;
 
     if(!(car = (car_t *)malloc(sizeof(car_t)))) {
-        printf("Error: Malloc could not allocate car\n");
+        printf("Error: Malloc could not allocate memory for car\n");
         return NULL;
     }
 
     if(sizeof(plate) > MAXREG) {
-        printf("Error: Car plate larger than required\n");
+        printf("Error: Car plate longer than is usual\n");
         return NULL;
     }
 

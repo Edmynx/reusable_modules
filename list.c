@@ -5,9 +5,11 @@
 
 static car_t *front = NULL;
 
+/*
 static void print_car(car_t *cp) {
     printf("%s\n", cp->plate);
 }
+*/
 
 /* put(): place a car at the beginning of the list
  * returns 0 if successful; nonzero otherwise 
