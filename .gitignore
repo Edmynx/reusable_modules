@@ -5,6 +5,7 @@
 *.exe
 *.out
 .DS_Store
+.vscode
 
 # Emacs Save files
 *~
